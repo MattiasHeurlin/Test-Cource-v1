@@ -6,7 +6,7 @@ import * as main from "../main";
 import { Todo } from '../models/Todo';
 
 beforeEach(() => {    
-    jest.clearAllMocks();
+    jest.resetAllMocks();
     document.body.innerHTML = '';
   });
 
@@ -39,11 +39,9 @@ describe("CreateNewTodo Tests", () => {
 
 })
 
-describe('createHtml Tests', () => {
     
-    test('Creates html for each todo', () => {
+    test('CreateHtml -create html for each todo', () => {
         document.body.innerHTML = `<ul id="todos" class="todo"></ul>`;
-        /* 
         let todos = [
             new Todo("Take out the trash", false),
             new Todo("Do the dishes", true),
@@ -51,15 +49,6 @@ describe('createHtml Tests', () => {
             new Todo("Finish homework", true),
             new Todo("Finish homework", false)
         ];
-        */
-       let todos = [
-        {text: 'Take out the trash', done: false},
-        {text: 'Do the dishes', done: true},
-        {text: 'Buy groceries', done: false},
-        {text: 'Finish homework', done: true},
-        {text: 'Take out the trash', done: false}
-       ];
-       
         main.createHtml(todos);
         const toDoLiElements = document.querySelectorAll('.todo__text');
         let checkToDoAmount = toDoLiElements.length;
@@ -68,9 +57,8 @@ describe('createHtml Tests', () => {
         expect(checkToDoAmount).toBe(5);
         expect(checkToDoText).toBe('Do the dishes');
     });
-})
 
-test('Change done status and update html', () => {
+test('ToggleTodo - Change done status and update html', () => {
     let spyChangeTodo = jest.spyOn(functions, 'changeTodo').mockReturnValue();
     let createHtml = jest.spyOn(main, 'createHtml').mockReturnValue();
     const todo = {text: 'test', done: false}
@@ -81,4 +69,43 @@ test('Change done status and update html', () => {
     expect(createHtml).toBeCalledTimes(1);
 });
 
+describe('DisplayError - tests', () => {
+    test('Change error text, remove show class',() => {
+        const errorText: string = 'Error Test';
+        document.body.innerHTML = `<div id="error" class="error"></div>`;
+        const errorContainer = document.querySelector('#error');
+
+        main.displayError(errorText, false);
+
+        expect(errorContainer?.innerHTML).toBe(errorText);
+        expect(errorContainer?.classList.length).toBe(1);
+    })
+    test('Add show class', () => {
+        const errorText: string = 'Error Test';
+        document.body.innerHTML = `<div id="error" class="error"></div>`;
+        const errorContainer = document.querySelector('#error');
+
+        main.displayError(errorText, true);
+
+        expect(errorContainer?.innerHTML).toBe(errorText);
+        expect(errorContainer?.classList.length).toBe(2);
+    })
+});
+
+test('ClearTodos - call two functions', () => {
+    let todos = [
+        new Todo("Take out the trash", false),
+        new Todo("Do the dishes", true),
+        new Todo("Buy groceries", false),
+        new Todo("Finish homework", true),
+        new Todo("Finish homework", false)
+    ];
+    let spyRemoveAllTodos = jest.spyOn(functions, 'removeAllTodos').mockReturnValue();
+    let spyCreateHtml = jest.spyOn(main, 'createHtml').mockReturnValue();
+    
+    main.clearTodos(todos);
+
+    expect(spyRemoveAllTodos).toBeCalledTimes(1);
+    expect(spyCreateHtml).toBeCalledTimes(1);
+})
 
