@@ -12,7 +12,7 @@ document.getElementById("clearTodos")?.addEventListener("click", () => {
   (e: SubmitEvent) => {
     e.preventDefault();
 
-    let todoText: string = (
+    let todoText: string = ( 
       document.getElementById("newTodoText") as HTMLInputElement
     ).value;
     console.log("Todos when creating", todos);
